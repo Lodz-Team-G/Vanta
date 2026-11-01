@@ -2,25 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Vanta - Prototip</title>
+    <title>Vanta - System Status</title>
     <style>
-        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #1e1e1e; color: white; }
-        #message { padding: 20px; border: 2px solid #4a86e8; border-radius: 10px; font-size: 24px; text-align: center; }
+        body { font-family: 'Courier New', Courier, monospace; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #0d1117; color: #58a6ff; margin: 0; }
+        #console { padding: 20px; border: 1px solid #30363d; border-radius: 10px; background-color: #161b22; width: 650px; box-shadow: 0 4px 15px rgba(0,0,0,0.7); }
+        .log { margin-bottom: 10px; font-size: 15px; }
+        .success { color: #3fb950; }
+        .error { color: #f85149; }
+        .header { color: #8b949e; border-bottom: 1px solid #30363d; padding-bottom: 10px; margin-bottom: 15px; font-weight: bold; text-align: center; font-size: 18px; }
     </style>
 </head>
 <body>
-    <div id="message">Veritabanına bağlanılıyor...</div>
+    <div id="console">
+        <div class="header">VANTA PROJECT - SYSTEM INITIALIZATION</div>
+        <div id="messages">
+            <div class="log">> Initializing connection to Vanta API...</div>
+        </div>
+    </div>
     <script>
         fetch('https://vanta-api-a9oe.onrender.com/api/test')
             .then(response => response.json())
             .then(data => {
+                const msgDiv = document.getElementById('messages');
+                msgDiv.innerHTML = '';
                 if(data.status === "success") {
-                    document.getElementById('message').innerText = data.database_message;
+                    data.database_messages.forEach(msg => {
+                        msgDiv.innerHTML += `<div class="log success">> ${msg}</div>`;
+                    });
                 } else {
-                    document.getElementById('message').innerText = "Hata: " + data.detail;
+                    msgDiv.innerHTML = `<div class="log error">> Error connecting to DB: ${data.detail}</div>`;
                 }
             })
-            .catch(err => document.getElementById('message').innerText = "API'ye ulaşılamadı.");
+            .catch(err => {
+                document.getElementById('messages').innerHTML = `<div class="log error">> CRITICAL: Failed to reach the API endpoint.</div>`;
+            });
     </script>
 </body>
 </html>

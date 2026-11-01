@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vanta - Prototip</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #1e1e1e; color: white; }
+        #message { padding: 20px; border: 2px solid #4a86e8; border-radius: 10px; font-size: 24px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div id="message">Veritabanına bağlanılıyor...</div>
+    <script>
+        // Render'daki GÜNCEL linkine istek atıyoruz
+        fetch('https://vanta-api-a9oe.onrender.com/api/test')
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === "success") {
+                    document.getElementById('message').innerText = data.database_message;
+                } else {
+                    document.getElementById('message').innerText = "Hata: " + data.detail;
+                }
+            })
+            .catch(err => document.getElementById('message').innerText = "API'ye ulaşılamadı.");
+    </script>
+</body>
+</html>

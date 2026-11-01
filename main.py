@@ -2,9 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import psycopg2
 import os
-from dotenv import load_dotenv  # .env dosyasını okumak için kütüphaneyi dahil ettik
+from dotenv import load_dotenv
 
-load_dotenv()  # Python'a .env dosyasını bul ve içindeki şifreleri yükle dedik
+load_dotenv()
 
 app = FastAPI()
 
@@ -21,10 +21,11 @@ def read_db_hello():
     try:
         conn = psycopg2.connect(db_url)
         cursor = conn.cursor()
-        cursor.execute("SELECT message FROM test_table LIMIT 1;")
-        result = cursor.fetchone()
+        cursor.execute("SELECT message FROM test_table ORDER BY message ASC;")
+        results = cursor.fetchall()
         cursor.close()
         conn.close()
-        return {"status": "success", "database_message": result[0]}
+        messages = [row[0] for row in results]
+        return {"status": "success", "database_messages": messages}
     except Exception as e:
         return {"status": "error", "detail": str(e)}
